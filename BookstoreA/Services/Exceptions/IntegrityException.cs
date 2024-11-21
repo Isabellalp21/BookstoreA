@@ -1,6 +1,10 @@
-﻿namespace BookstoreA.Services.Exceptions
+﻿
+namespace BookstoreA.Services.Exceptions
 {
-    public class IntegrityException
+    public class IntegrityException : ApplicationException
     {
+        public IntegrityException(string? message) : base(message)
+        {
+        }
     }
 }

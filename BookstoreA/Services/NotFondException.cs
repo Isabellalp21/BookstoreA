@@ -1,6 +1,10 @@
-﻿namespace BookstoreA.Services
+﻿namespace BookstoreA.Services.Exceptions
 {
-    public class NotFondException
+    public class NotFondException : ApplicationException
     {
+        public NotFondException(string? message) : base(message)
+        {
+
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace BookstoreA.Models
 {
-    public class Book
+    public class Class
     {
     }
 }
