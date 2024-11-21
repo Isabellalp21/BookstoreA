@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\lib\bootstrap-icons\" />
+    <Folder Include="wwwroot/lib/bootstrap-icons/bootstrap-icons/" />
   </ItemGroup>
 
   <ItemGroup>

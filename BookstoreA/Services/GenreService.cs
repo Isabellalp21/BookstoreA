@@ -1,30 +1,29 @@
-﻿using BookstoreA.Data;
+﻿
+using BookstoreA.Data;
 using BookstoreA.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BookstoreA.Services
 {
-    public class GenreService
-    {
-        private readonly BookstoreContext _context;
+	public class GenreService
+	{
+		private readonly BookstoreContext _context;
+		public GenreService(BookstoreContext context)
+		{
+			_context = context;
+		}
+		public List<Genre> FindAll()
+		{
+			return _context.Genres.ToList();
+		}
 
-        public GenreService(BookstoreContext context)
+        internal async Task<string?> FindAllAsync()
         {
-            _context = context;
+            throw new NotImplementedException();
         }
 
-        public async Task<List<Genre>> FindAllAsync()
+        internal async Task FindByIdAsync(int value)
         {
-            return await _context.Genres.ToListAsync();
+            throw new NotImplementedException();
         }
-
-        public async Task InsertAsync(Genre genre)
-        {
-            _context.Add(genre);
-            await _context.SaveChangesAsync();
-        }
-
-           }
+    }
 }
