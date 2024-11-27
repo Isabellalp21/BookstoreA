@@ -10,10 +10,10 @@
     <h4>Genre</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
     </dl>
@@ -34,22 +34,22 @@
                 <tbody>
                     @foreach (Book item in Model.Books)
                     {
-                            <tr>
-                                <td>
-                                    <a asp-controller="Books" asp-action="Details" asp-route-id="@item.Id">
+                        <tr>
+                            <td>
+                                <a asp-controller="Books" asp-action="Details" asp-route-id="@item.Id">
                                     @Html.DisplayFor(modelItem => item.Title)
-                                    </a>
-                                </td>
-                                <td>
+                                </a>
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.Price)
-                                </td>
-                                <td>
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.Author)
-                                </td>
-                                <td>
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.ReleaseYear)
-                                </td>
-                            </tr>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
