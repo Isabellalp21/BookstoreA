@@ -3,9 +3,13 @@ using BookstoreA.Models;
 using BookstoreA.Models.ViewModels;
 using BookstoreA.Services;
 using BookstoreA.Services.Exceptions;
+using BookstoreA.Models.ViewModels;
+using BookstoreA.Models;
+using BookstoreA.Services.Exceptions;
+using BookstoreA.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using BookstoreA.Models;
+using Bookstore.Services;
 
 
 namespace BookstoreA.Controllers
@@ -115,6 +119,21 @@ namespace BookstoreA.Controllers
             {
                 return RedirectToAction(nameof(Error), new { message = ex.Message });
             }
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id is null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
+            }
+            var obj = await _service.FindByIdEagerAsync(id.Value);
+            if (obj is null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+            }
+
+            return View(obj);
         }
 
         public IActionResult Error(string message)

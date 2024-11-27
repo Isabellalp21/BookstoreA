@@ -1,80 +1,80 @@
 ﻿using BookstoreA.Data;
 using BookstoreA.Models;
 using BookstoreA.Services.Exceptions;
+using BookstoreA.Data;
+using BookstoreA.Models;
+using BookstoreA.Services.Exceptions;
+using BookstoreA.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
-namespace BookstoreA.Services
+namespace Bookstore.Services
 {
-	public class GenreService
-	{
-		// Atributo privado do Context
-		private readonly BookstoreContext _context;
-		// Construtor passando ele
-		public GenreService(BookstoreContext context)
-		{
-			_context = context;
-		}
+    public class GenreService
+    {
+        private readonly BookstoreContext _context;
 
-		// Método que faz o que o controller tava fazendo
-		// Agora a gente faz o controller chamar esse método aqui.
-		// GET: Genres
-		public async Task<List<Genre>> FindAllAsync()
-		{
-			return await _context.Genres.ToListAsync();
-		}
+        public GenreService(BookstoreContext context)
+        {
+            _context = context;
+        }
 
-		// GET: Genres/Details/x
-		public async Task<Genre> FindByIdEagerAsync(int id)
-		{
-			return await _context.Genres.Include(x => x.Books).FirstOrDefaultAsync(x => x.Id == id);
-		}
+        public async Task<List<Genre>> FindAllAsync()
+        {
+            return await _context.Genres.ToListAsync();
+        }
 
+        public async Task InsertAsync(Genre genre)
+        {
+            _context.Add(genre);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<Genre> FindByIdEagerAsync(int id)
+        {
+            return await _context.Genres.Include(x => x.Books).FirstOrDefaultAsync(x => x.Id == id);
+        }
 
-		public async Task<Genre> FindByIdAsync(int id)
-		{
-			return await _context.Genres.FirstOrDefaultAsync(x => x.Id == id);
-		}
+        public async Task<Genre> FindByIdAsync(int id)
+        {
+            return await _context.Genres.FindAsync(id);
+        }
 
-		// POST: Genres/Create
-		public async Task InsertAsync(Genre genre)
-		{
-			_context.Add(genre);
-			await _context.SaveChangesAsync();
-		}
+        public async Task RemoveAsync(int id)
+        {
+            try
+            {
+                Genre obj = await _context.Genres.FindAsync(id);
+                _context.Remove(obj);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new IntegrityException(ex.Message);
+            }
+        }
 
-		// POST: Genres/Delete/x
-		public async Task RemoveAsync(int id)
-		{
-			try
-			{
-				var obj = await _context.Genres.FindAsync(id);
-				_context.Genres.Remove(obj);
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateException ex)
-			{
-				throw new IntegrityException(ex.Message);
-			}
-		}
+        // POST: Genres/Edit/x
+        public async Task UpdateAsync(Genre genre)
+        {
+            // Confere se tem alguém com esse Id
+            bool hasAny = await _context.Genres.AnyAsync(x => x.Id == genre.Id);
+            // Se não tiver, lança exceção de NotFound.
+            if (!hasAny)
+            {
+                throw new NotFoundException("Id não encontrado");
+            }
+            // Tenta atualizar
+            try
+            {
+                _context.Update(genre);
+                await _context.SaveChangesAsync();
+            }
+            // Se não der, captura a exceção lançada
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new DbConcurrencyException(ex.Message);
+            }
+        }
 
-		// POST: Genres/Edit/x
-		public async Task UpdateAsync(Genre genre)
-		{
-			bool hasAny = await _context.Genres.AnyAsync(x => x.Id == genre.Id);
-			if (!hasAny)
-			{
-				throw new NotFoundException("Id não encontrado");
-			}
-
-			try
-			{
-				_context.Update(genre);
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateConcurrencyException ex)
-			{
-				throw new DbConcorrencyException(ex.Message);
-			}
-		}
-	}
+    }
 }
