@@ -5,6 +5,8 @@ using BookstoreA.Services;
 using BookstoreA.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using BookstoreA.Models;
+
 
 namespace BookstoreA.Controllers
 {
@@ -16,9 +18,9 @@ namespace BookstoreA.Controllers
         {
             _service = service;
         }
+
         public async Task<IActionResult> Index()
         {
-
             return View(await _service.FindAllAsync());
         }
 
@@ -41,16 +43,19 @@ namespace BookstoreA.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
             {
-                return RedirectToAction(nameof(Error), new { message = "O id não foi fornecido." });
+                return RedirectToAction(nameof(Error),
+                    new { message = "O id não foi fornecido." });
             }
             Genre genre = await _service.FindByIdAsync(id.Value);
             if (genre is null)
             {
-                return RedirectToAction(nameof(Error), new { message = "O id não foi encontrado." });
+                return RedirectToAction(nameof(Error),
+                    new { message = "O id não foi encontrado." });
             }
 
             return View(genre);
@@ -82,6 +87,8 @@ namespace BookstoreA.Controllers
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
+
+
             return View(obj);
         }
 
@@ -93,10 +100,12 @@ namespace BookstoreA.Controllers
             {
                 return View();
             }
+
             if (id != genre.Id)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id´s não condizentes" });
+                return RedirectToAction(nameof(Error), new { message = "Id's não condizentes" });
             }
+
             try
             {
                 await _service.UpdateAsync(genre);
@@ -108,30 +117,18 @@ namespace BookstoreA.Controllers
             }
         }
 
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id is null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
-            }
-            var obj = await _service.FindByIdEagerAsync(id.Value);
-            if (obj is null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
-            }
-            return View(obj);
-        }
-
         public IActionResult Error(string message)
         {
             ErrorViewModel viewModel = new ErrorViewModel
             {
                 Message = message,
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+                RequestId = Activity.Current?.Id
+                    ?? HttpContext.TraceIdentifier
             };
-
             return View(viewModel);
         }
+
+
 
     }
 }

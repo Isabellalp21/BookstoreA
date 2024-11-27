@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BookstoreA.Models;
+using BookstoreA.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookstoreA.Models
 {
     public class Book
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
 
         [Display(Name = "Título")]
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
@@ -24,15 +26,14 @@ namespace BookstoreA.Models
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int ReleaseYear { get; set; }
 
-
         [Display(Name = "Gêneros Literários")]
         public ICollection<Genre> Genres { get; set; } = new List<Genre>();
-
 
         public Book()
         {
 
         }
+
         public Book(int id, string title, double price, string author, int releaseYear)
         {
             Id = id;
