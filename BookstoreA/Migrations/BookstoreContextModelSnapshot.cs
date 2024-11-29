@@ -22,78 +22,78 @@ namespace BookstoreA.Migrations
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("BookGenre", b =>
-                {
-                    b.Property<int>("BooksId")
-                        .HasColumnType("int");
+            {
+                b.Property<int>("BooksId")
+                    .HasColumnType("int");
 
-                    b.Property<int>("GenresId")
-                        .HasColumnType("int");
+                b.Property<int>("GenresId")
+                    .HasColumnType("int");
 
-                    b.HasKey("BooksId", "GenresId");
+                b.HasKey("BooksId", "GenresId");
 
-                    b.HasIndex("GenresId");
+                b.HasIndex("GenresId");
 
-                    b.ToTable("BookGenre");
-                });
+                b.ToTable("BookGenre");
+            });
 
-            modelBuilder.Entity("BookstoreA.Models.Book", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            modelBuilder.Entity("Bookstore.Models.Book", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("Author")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double");
+                b.Property<double>("Price")
+                    .HasColumnType("double");
 
-                    b.Property<int>("ReleaseYear")
-                        .HasColumnType("int");
+                b.Property<int>("ReleaseYear")
+                    .HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("Title")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("book", (string)null);
-                });
+                b.ToTable("Books");
+            });
 
-            modelBuilder.Entity("BookstoreA.Models.Genre", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            modelBuilder.Entity("Bookstore.Models.Genre", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Genres");
-                });
+                b.ToTable("Genres");
+            });
 
             modelBuilder.Entity("BookGenre", b =>
-                {
-                    b.HasOne("BookstoreA.Models.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("Bookstore.Models.Book", null)
+                    .WithMany()
+                    .HasForeignKey("BooksId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("BookstoreA.Models.Genre", null)
-                        .WithMany()
-                        .HasForeignKey("GenresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                b.HasOne("Bookstore.Models.Genre", null)
+                    .WithMany()
+                    .HasForeignKey("GenresId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 #pragma warning restore 612, 618
         }
     }

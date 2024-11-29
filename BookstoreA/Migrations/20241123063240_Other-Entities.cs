@@ -11,11 +11,8 @@ namespace BookstoreA.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
-
             migrationBuilder.CreateTable(
-                name: "book",
+                name: "Books",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -29,22 +26,7 @@ namespace BookstoreA.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_book", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Genres",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Genres", x => x.Id);
+                    table.PrimaryKey("PK_Books", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -59,15 +41,15 @@ namespace BookstoreA.Migrations
                 {
                     table.PrimaryKey("PK_BookGenre", x => new { x.BooksId, x.GenresId });
                     table.ForeignKey(
-                        name: "FK_BookGenre_Genres_GenresId",
-                        column: x => x.GenresId,
-                        principalTable: "Genres",
+                        name: "FK_BookGenre_Books_BooksId",
+                        column: x => x.BooksId,
+                        principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookGenre_book_BooksId",
-                        column: x => x.BooksId,
-                        principalTable: "book",
+                        name: "FK_BookGenre_Genres_GenresId",
+                        column: x => x.GenresId,
+                        principalTable: "Genres",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -86,10 +68,7 @@ namespace BookstoreA.Migrations
                 name: "BookGenre");
 
             migrationBuilder.DropTable(
-                name: "Genres");
-
-            migrationBuilder.DropTable(
-                name: "book");
+                name: "Books");
         }
     }
 }

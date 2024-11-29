@@ -1,12 +1,16 @@
+using Bookstore.Services;
 using BookstoreA.Data;
 using BookstoreA.Services;
 using Microsoft.EntityFrameworkCore;
 
-internal class Program
+namespace BookstoreA;
+
+public class Program
 {
-    private static void Main(string[] args)
+    public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        WebApplicationBuilder webApplicationBuilder = WebApplication.CreateBuilder(args);
+        var builder = webApplicationBuilder;
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
@@ -31,6 +35,7 @@ internal class Program
         builder.Services.AddScoped<SeedingService>();
 
 
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -40,13 +45,10 @@ internal class Program
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
-        else 
+        else
         {
-            // Criamos um escopo de execução nos serviços, usamos o GetRequiredService para selecionar o serviço a ser executado e selecionamos o método Seed().
             app.Services.CreateScope().ServiceProvider.GetRequiredService<SeedingService>().Seed();
         }
-
-
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();

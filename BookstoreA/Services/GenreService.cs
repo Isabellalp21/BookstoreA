@@ -1,14 +1,18 @@
 ﻿using BookstoreA.Data;
 using BookstoreA.Models;
 using BookstoreA.Services.Exceptions;
+using BookstoreA.Data;
+using BookstoreA.Models;
+using BookstoreA.Services.Exceptions;
+using BookstoreA.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
-namespace BookstoreA.Services
+namespace Bookstore.Services
 {
     public class GenreService
     {
         private readonly BookstoreContext _context;
-
 
         public GenreService(BookstoreContext context)
         {
@@ -25,21 +29,14 @@ namespace BookstoreA.Services
             _context.Add(genre);
             await _context.SaveChangesAsync();
         }
+        public async Task<Genre> FindByIdEagerAsync(int id)
+        {
+            return await _context.Genres.Include(x => x.Books).FirstOrDefaultAsync(x => x.Id == id);
+        }
 
         public async Task<Genre> FindByIdAsync(int id)
         {
-            return await _context
-                 .Genres
-                .Include(X => X.Books)
-                .FirstOrDefaultAsync(x => x.Id == id);
-        }
-
-        public async Task<Genre> FindByIdEagerAsync(int id)
-        {
-            return await _context
-                 .Genres
-                .Include(X => X.Books)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Genres.FindAsync(id);
         }
 
         public async Task RemoveAsync(int id)
@@ -56,22 +53,28 @@ namespace BookstoreA.Services
             }
         }
 
+        // POST: Genres/Edit/x
         public async Task UpdateAsync(Genre genre)
         {
+            // Confere se tem alguém com esse Id
             bool hasAny = await _context.Genres.AnyAsync(x => x.Id == genre.Id);
+            // Se não tiver, lança exceção de NotFound.
             if (!hasAny)
             {
-                throw new NotImplementedException("Id não encontrado");
+                throw new NotFoundException("Id não encontrado");
             }
+            // Tenta atualizar
             try
             {
                 _context.Update(genre);
                 await _context.SaveChangesAsync();
             }
+            // Se não der, captura a exceção lançada
             catch (DbUpdateConcurrencyException ex)
             {
-                throw new DbUpdateConcurrencyException(ex.Message);
+                throw new DbConcurrencyException(ex.Message);
             }
         }
+
     }
 }

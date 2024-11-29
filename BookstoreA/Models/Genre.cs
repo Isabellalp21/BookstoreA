@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BookstoreA.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookstoreA.Models
 {
@@ -10,21 +11,20 @@ namespace BookstoreA.Models
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public string Name { get; set; }
 
-        [Display(Name = "Livros")]
         public ICollection<Book> Books { get; set; } = new List<Book>();
-
-
 
         public Genre()
         {
-            
-        } 
+
+        }
 
         public Genre(int id, string name)
         {
             Id = id;
             Name = name;
-            
         }
+
+
+
     }
 }
