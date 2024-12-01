@@ -4,10 +4,10 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Detalhes</h1>
 
 <div>
-    <h4>Book</h4>
+    <h4>Livro</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -38,15 +38,15 @@
             @Html.DisplayNameFor(model => model.Genres)
         </dt>
         <dd class="col-sm-10">
-            @foreach (Genre genre in Model.Genres)
+            @foreach (var item in Model.Genres)
             {
-                <a asp-controller="Genres" asp-action="Details" asp-route-id="@genre.Id">@genre.Name</a>
+                <a asp-controller="Genres" asp-action="Details" as-route-id="@item.Id">@item.Name</a>
                 <br />
             }
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">Editar</a>
+    <a asp-action="Index">Voltar para lista</a>
 </div>

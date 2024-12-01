@@ -1,7 +1,8 @@
 ﻿using BookstoreA.Data;
 using BookstoreA.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace Bookstore.Services
+namespace Bookstore.Service
 {
     public class SeedingService
     {

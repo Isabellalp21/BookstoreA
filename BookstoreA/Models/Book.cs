@@ -1,5 +1,4 @@
 ﻿using BookstoreA.Models;
-using BookstoreA.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace BookstoreA.Models

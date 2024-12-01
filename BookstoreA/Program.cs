@@ -1,9 +1,9 @@
-using BookstoreA.Services;
 using BookstoreA.Data;
 using Microsoft.EntityFrameworkCore;
-using Bookstore.Services;
+using BookstoreA.Service;
+using Bookstore.Service;
 
-namespace Bookstore
+namespace BookstoreA
 {
     public class Program
     {
@@ -13,8 +13,9 @@ namespace Bookstore
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
-
+            builder.Services.AddScoped<GenreService>();
+            builder.Services.AddScoped<SeedingService>();
+            builder.Services.AddScoped<BookService>();
             builder.Services.AddDbContext<BookstoreContext>(options =>
             {
                 options.UseMySql(
@@ -29,12 +30,6 @@ namespace Bookstore
                         )
                 );
             });
-
-            builder.Services.AddScoped<GenreService>();
-            builder.Services.AddScoped<BookService>();
-            builder.Services.AddScoped<SeedingService>();
-
-
 
             var app = builder.Build();
 
