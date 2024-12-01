@@ -7,32 +7,31 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookstoreA.Data;
 using BookstoreA.Models;
-using BookstoreA.Services;
+using BookstoreA.Service;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using BookstoreA.Models.ViewModels;
 using System.Diagnostics;
-using BookstoreA.Services.Exceptions;
-using BookstoreA.Controllers;
-using Bookstore.Services;
+using BookstoreA.Service.Exceptions;
+
 
 namespace BookstoreA.Controllers
 {
     public class BooksController : Controller
     {
         private readonly BookService _service;
+        private readonly GenreService _genreService;
 
-        public BooksController(BookService service)
+        public BooksController(BookService service, GenreService genreService)
         {
             _service = service;
+            _genreService = genreService;
         }
 
-        // GET: Books
         public async Task<IActionResult> Index()
         {
             return View(await _service.FindAllAsync());
         }
 
-        // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
@@ -41,6 +40,7 @@ namespace BookstoreA.Controllers
             }
 
             var book = await _service.FindByIdAsync(id.Value);
+
             if (book is null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
@@ -49,28 +49,37 @@ namespace BookstoreA.Controllers
             return View(book);
         }
 
-        // GET: Books/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            List<Genre> genres = await _genreService.FindAllAsync();
+            BookFormViewModel viewModel = new BookFormViewModel { Genres = genres };
+            return View(viewModel);
         }
 
-        // POST: Books/Create        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Book book)
+        public async Task<IActionResult> Create(BookFormViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                viewModel.Genres = await _genreService.FindAllAsync();
+                return View(viewModel);
             }
+            viewModel.Book.Genres = new List<Genre>();
+            ; foreach (int genreId in viewModel.SelectedGenresIds)
+            {
+                Genre genre = await _genreService.FindByIdAsync(genreId);
+                if (genre is not null)
+                {
+                    viewModel.Book.Genres.Add(genre);
+                }
 
-            await _service.InsertAsync(book);
-
+            }
+            await _service.InsertAsyns(viewModel.Book);
             return RedirectToAction(nameof(Index));
+
         }
 
-        // GET: Books/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
@@ -78,58 +87,42 @@ namespace BookstoreA.Controllers
                 return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
             }
 
-            var book = await _service.FindByIdAsync(id.Value);
-            if (book is null)
+            var obj = await _service.FindByIdAsync(id.Value);
+            if (obj is null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
+            List<Genre> genres = await _genreService.FindAllAsync();
+            BookFormViewModel viewModel = new BookFormViewModel { Book = obj, Genres = genres };
 
-            return View(book);
+            return View(viewModel);
         }
 
-        // POST: Books/Edit/5 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Book book)
+        public async Task<IActionResult> Edit(int id, BookFormViewModel viewModel)
         {
-            if (id != book.Id)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id's não condizentes" });
-            }
             if (!ModelState.IsValid)
             {
                 return View();
             }
+            if (id != viewModel.Book.Id)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id's não condizentes" });
+            }
 
             try
             {
-                await _service.UpdateAsync(book);
+                await _service.UpdateAsync(viewModel);
                 return RedirectToAction(nameof(Index));
             }
             catch (ApplicationException ex)
             {
-                return RedirectToAction(nameof(Error), new { message = ex.Message }); ;
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
             }
+
         }
-
-        // GET: Books/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id is null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
-            }
-
-            var book = await _service.FindByIdAsync(id.Value);
-            if (book is null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
-            }
-
-            return View(book);
-        }
-
-        // POST: Books/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
@@ -145,13 +138,34 @@ namespace BookstoreA.Controllers
             }
         }
 
+
+        // GET: Books/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id is null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
+            }
+
+            var obj = await _service.FindByIdAsync(id.Value);
+
+            if (obj is null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+            }
+
+            return View(obj);
+        }
+
+
+
+
         public IActionResult Error(string message)
         {
-            ErrorViewModel viewModel = new ErrorViewModel
+            var viewModel = new ErrorViewModel
             {
                 Message = message,
-                RequestId = Activity.Current?.Id
-                    ?? HttpContext.TraceIdentifier
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             };
             return View(viewModel);
         }

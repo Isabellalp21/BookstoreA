@@ -1,4 +1,5 @@
-﻿namespace BookstoreA.Services.Exceptions
+﻿namespace BookstoreA.Service.Exceptions
+
 {
     public class DbConcurrencyException : ApplicationException
     {

@@ -1,5 +1,4 @@
 ﻿using BookstoreA.Models;
-using BookstoreA.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookstoreA.Data

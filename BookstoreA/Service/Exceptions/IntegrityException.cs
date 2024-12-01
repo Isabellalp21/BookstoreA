@@ -1,5 +1,5 @@
 ﻿
-namespace BookstoreA.Services.Exceptions
+namespace BookstoreA.Service.Exceptions
 {
     public class IntegrityException : ApplicationException
     {
